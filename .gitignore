@@ -1,0 +1,17 @@
+# 依赖与构建产物
+node_modules/
+dist/
+myweb_backend/target/
+
+# 日志
+*.log
+
+# 本地环境配置（可能包含密码）
+.env
+*.env
+!*.env.example
+
+# 临时文件与截图
+page-check*.png
+.DS_Store
+Thumbs.db

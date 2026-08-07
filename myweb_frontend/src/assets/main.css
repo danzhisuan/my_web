@@ -1,0 +1,26 @@
+/* ===== 全局基础样式（页面布局全部由 App.vue 管理） ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+html,
+body {
+  overflow: hidden;
+  background: #f6f7ff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
