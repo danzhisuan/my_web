@@ -8,9 +8,12 @@
       </div>
     </nav>
 
-    <!-- 主体：左右并排 -->
+    <!-- 主体：居中排布 -->
     <main class="main" v-if="info">
-      <div class="left">
+      <div class="hero">
+        <div class="avatar">
+          <img :src="info.photo" alt="头像" />
+        </div>
         <p class="greeting">{{ info.title }}</p>
         <h1 class="name">{{ info.name }}</h1>
         <p class="subtitle">{{ info.subtitle }}</p>
@@ -18,15 +21,11 @@
           <span class="chip" v-for="t in techList" :key="t">{{ t }}</span>
         </div>
       </div>
-
-      <div class="right">
-        <img :src="info.photo" alt="头像" />
-      </div>
     </main>
 
     <div v-else class="loading">
       <div v-if="!loadError" class="spinner"></div>
-      <p v-if="!loadError">加载中...</p>
+      <p v-if="!loadError">加载中…</p>
       <p v-else class="load-error">加载失败，请稍后重试</p>
       <button v-if="loadError" class="retry-btn" @click="loadInfo">重试</button>
     </div>
@@ -67,6 +66,35 @@ const techList = computed(() => {
 </script>
 
 <style>
+/* ===== 设计令牌（Apple 风格，跟随系统深浅色） ===== */
+:root {
+  --bg: #f5f5f7;
+  --text: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --accent: #0071e3;
+  --nav-bg: rgba(255, 255, 255, 0.72);
+  --nav-border: rgba(0, 0, 0, 0.08);
+  --chip-bg: #e8e8ed;
+  --chip-hover: #d2d2d7;
+  --avatar-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --text: #f5f5f7;
+    --text-secondary: #86868b;
+    --accent: #2997ff;
+    --nav-bg: rgba(22, 22, 23, 0.72);
+    --nav-border: rgba(255, 255, 255, 0.1);
+    --chip-bg: #1d1d1f;
+    --chip-hover: #2c2c2e;
+    --avatar-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  }
+}
+
 /* ===== 全局重置 ===== */
 * {
   margin: 0;
@@ -79,7 +107,8 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #f5f7fa;
+  background: var(--bg);
+  color-scheme: light dark;
 }
 
 /* ===== 页面容器 ===== */
@@ -88,113 +117,134 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f5f7fa;
-  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  font-family: var(--font-sans);
+  color: var(--text);
   overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ===== 顶部导航 ===== */
 .navbar {
-  height: 64px;
-  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 0 22px;
+  background: var(--nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--nav-border);
 }
 
 .logo {
-  font-size: 18px;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
 .nav-items {
   display: flex;
-  gap: 8px;
+  gap: 4px;
 }
 
 .nav-item {
-  padding: 8px 16px;
-  font-size: 15px;
-  color: #4b5563;
+  padding: 6px 14px;
+  font-size: 14px;
+  color: var(--text);
   cursor: default;
   border-radius: 6px;
   transition: color 0.2s ease, background 0.2s ease;
 }
 
 .nav-item:hover {
-  color: #4f46e5;
-  background: #eef2ff;
+  color: var(--accent);
+  background: rgba(0, 0, 0, 0.04);
 }
 
-/* ===== 主体：左右并排 ===== */
+/* ===== 主体：居中排布 ===== */
 .main {
   flex: 1;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8vw;
-  padding: 32px 8vw;
+  padding: 72px 24px 40px;
 }
 
-.left {
-  max-width: 480px;
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 720px;
+}
+
+.avatar {
+  margin-bottom: 28px;
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.avatar img {
+  display: block;
+  width: 132px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--avatar-shadow);
 }
 
 .greeting {
-  font-size: 20px;
-  color: #6b7280;
+  font-size: 19px;
+  color: var(--text-secondary);
   margin-bottom: 6px;
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
 }
 
 .name {
-  font-size: 56px;
-  font-weight: 800;
-  color: #111827;
-  line-height: 1.2;
-  margin-bottom: 8px;
+  font-size: clamp(44px, 7vw, 76px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 10px;
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
 }
 
 .subtitle {
-  font-size: 18px;
-  color: #6b7280;
-  margin-bottom: 24px;
+  font-size: 21px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
 }
 
 .tech-chips {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
+  animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
 }
 
 .chip {
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  color: #4f46e5;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  padding: 8px 18px;
+  border-radius: 980px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--chip-bg);
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
-/* ===== 右侧头像 ===== */
-.right {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.right img {
-  width: min(36vw, 360px);
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #fff;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+.chip:hover {
+  background: var(--chip-hover);
+  transform: translateY(-1px);
 }
 
 /* ===== 加载与错误 ===== */
@@ -204,78 +254,94 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  font-size: 16px;
-  color: #6b7280;
+  gap: 18px;
+  font-size: 15px;
+  color: var(--text-secondary);
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  border: 3px solid #e5e7eb;
-  border-top-color: #4f46e5;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--text-secondary);
   animation: spin 0.9s linear infinite;
 }
 
+@media (prefers-color-scheme: dark) {
+  .spinner {
+    border-color: rgba(255, 255, 255, 0.15);
+    border-top-color: var(--text-secondary);
+  }
+}
+
+.load-error {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.retry-btn {
+  padding: 10px 26px;
+  border: none;
+  border-radius: 980px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  background: var(--accent);
+  transition: opacity 0.2s ease;
+}
+
+.retry-btn:hover {
+  opacity: 0.85;
+}
+
+/* ===== 动画 ===== */
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-.load-error {
-  color: #dc2626;
-  font-weight: 600;
-}
-
-.retry-btn {
-  padding: 9px 24px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-  cursor: pointer;
-  background: #4f46e5;
-  transition: background 0.2s ease;
-}
-
-.retry-btn:hover {
-  background: #4338ca;
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== 窄屏适配 ===== */
-@media (max-width: 860px) {
+@media (max-width: 720px) {
   .navbar {
     height: auto;
-    flex-direction: column;
-    gap: 8px;
     padding: 12px 16px;
   }
 
-  .nav-items {
-    flex-wrap: wrap;
-    justify-content: center;
+  .avatar img {
+    width: 104px;
   }
 
-  .main {
-    flex-direction: column-reverse;
-    gap: 28px;
-    padding: 24px;
-    justify-content: center;
+  .name {
+    font-size: clamp(36px, 11vw, 52px);
   }
 
-  .left {
-    text-align: center;
+  .subtitle {
+    font-size: 18px;
   }
+}
 
-  .tech-chips {
-    justify-content: center;
-  }
-
-  .right img {
-    width: 180px;
+/* ===== 减少动效偏好 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
 </style>
